@@ -356,16 +356,52 @@
             color: #2c3e50;
             margin-bottom: 10px;
             font-size: 1.1rem;
+            cursor: pointer; /* Biến con trỏ thành bàn tay khi di chuột qua tiêu đề */
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Canh giữa tiêu đề */
+            gap: 10px;
+            font-weight: bold; /* In đậm tiêu đề */
+            color: #1a2a6c; /* Màu sắc cho tiêu đề */
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .info-box h3 i {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .info-box.active h3 i {
+            transform: rotate(90deg); /* Xoay icon khi mở rộng */
         }
         
         .info-box ul {
             padding-left: 20px;
-            margin-bottom: 10px;
+            margin-bottom: 0; /* Remove bottom margin */
+            list-style: none; /* Remove default bullet points */
+            transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
+            max-height: 0; /* Thu gọn nội dung */
+            overflow: hidden;
+            opacity: 0;
+        }
+
+        .info-box.active ul {
+            max-height: 500px; /* Chiều cao tối đa khi mở rộng */
+            opacity: 1;
+            margin-top: 10px; /* Add margin when expanded */
         }
         
         .info-box li {
             margin-bottom: 8px;
-            color: #2c3e50;
+            color: #2980b9; /* Màu sắc cho nội dung hướng dẫn */
+            position: relative;
+            padding-left: 25px; /* Khoảng cách cho icon */
+        }
+
+        .info-box li i {
+            position: absolute;
+            left: 0;
+            top: 4px;
+            color: #27ae60; /* Màu sắc cho icon check */
         }
         
         .duplicate-warning {
@@ -487,17 +523,17 @@
                 </button>
             </div>
             
-            <div class="info-box">
-                <h3><i class="fas fa-info-circle"></i> Hướng dẫn sử dụng:</h3>
+            <div class="info-box" id="infoBox">
+                <h3><i class="fas fa-chevron-right"></i> Hướng dẫn sử dụng</h3>
                 <ul>
-                    <li><i class="fas fa-check-circle"></i> Bắt đầu ghi âm: Nhấn vào nút biểu tượng Micro lớn ở giữa để bắt đầu hoặc dừng ghi âm.</li>
-                    <li><i class="fas fa-check-circle"></i> Cấp quyền Micro: Nếu đây là lần đầu sử dụng, trình duyệt có thể yêu cầu cấp quyền truy cập micro. Vui lòng cho phép để ứng dụng hoạt động.</li>
-                    <li><i class="fas fa-check-circle"></i> Nói rõ ràng: Để đạt kết quả tốt nhất, hãy nói rõ ràng, chậm rãi và ở gần micro.</li>
-                    <li><i class="fas fa-check-circle"></i> Sao chép văn bản: Sau khi ghi âm, nhấn nút "Copy văn bản" để sao chép nội dung vào bộ nhớ tạm.</li>
-                    <li><i class="fas fa-check-circle"></i> Tạo file .txt: Nhấn nút "Tạo file .txt" để tải văn bản đã chuyển đổi xuống máy tính của bạn.</li>
-                    <li><i class="fas fa-check-circle"></i> Chia sẻ văn bản: Nhấn nút "Chia sẻ văn bản" để chia sẻ nội dung thông qua các ứng dụng khác (tùy thuộc vào thiết bị của bạn).</li>
-                    <li><i class="fas fa-check-circle"></i> Xóa văn bản: Nhấn nút "Xóa văn bản" để xóa toàn bộ nội dung trong ô văn bản.</li>
-                    <li><i class="fas fa-check-circle"></i> Lưu ý trình duyệt: Ứng dụng hoạt động tốt nhất và ổn định nhất trên trình duyệt Google Chrome.</li>
+                    <li><i class="fas fa-check-circle"></i> **Bắt đầu ghi âm:** Nhấn vào nút biểu tượng Micro lớn ở giữa để bắt đầu hoặc dừng ghi âm.</li>
+                    <li><i class="fas fa-check-circle"></i> **Cấp quyền Micro:** Nếu đây là lần đầu sử dụng, trình duyệt có thể yêu cầu cấp quyền truy cập micro. Vui lòng cho phép để ứng dụng hoạt động.</li>
+                    <li><i class="fas fa-check-circle"></i> **Nói rõ ràng:** Để đạt kết quả tốt nhất, hãy nói rõ ràng, chậm rãi và ở gần micro.</li>
+                    <li><i class="fas fa-check-circle"></i> **Sao chép văn bản:** Sau khi ghi âm, nhấn nút "Copy văn bản" để sao chép nội dung vào bộ nhớ tạm.</li>
+                    <li><i class="fas fa-check-circle"></i> **Tạo file .txt:** Nhấn nút "Tạo file .txt" để tải văn bản đã chuyển đổi xuống máy tính của bạn.</li>
+                    <li><i class="fas fa-check-circle"></i> **Chia sẻ văn bản:** Nhấn nút "Chia sẻ văn bản" để chia sẻ nội dung thông qua các ứng dụng khác (tùy thuộc vào thiết bị của bạn).</li>
+                    <li><i class="fas fa-check-circle"></i> **Xóa văn bản:** Nhấn nút "Xóa văn bản" để xóa toàn bộ nội dung trong ô văn bản.</li>
+                    <li><i class="fas fa-check-circle"></i> **Lưu ý trình duyệt:** Ứng dụng hoạt động tốt nhất và ổn định nhất trên trình duyệt Google Chrome.</li>
                 </ul>
             </div>
         </div>
@@ -518,6 +554,8 @@
             const status = document.getElementById('status');
             const soundWaves = document.querySelectorAll('.sound-wave');
             const duplicateWarning = document.getElementById('duplicateWarning');
+            const infoBox = document.getElementById('infoBox'); // Get the info box element
+            const infoBoxHeading = infoBox.querySelector('h3'); // Get the heading inside info box
             
             // Kiểm tra trình duyệt hỗ trợ Web Speech API
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -761,8 +799,7 @@
                     lastProcessedIndex = 0;
                 }
             });
-        });
-    
+
             // Xử lý nút Chia sẻ
             const shareBtn = document.getElementById('shareBtn');
             shareBtn.addEventListener('click', async () => {
@@ -786,6 +823,11 @@
                 }
             });
 
-</script>
+            // Toggle function for info box
+            infoBoxHeading.addEventListener('click', () => {
+                infoBox.classList.toggle('active');
+            });
+        });
+    </script>
 </body>
 </html>
