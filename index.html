@@ -332,8 +332,8 @@
             }
             
             const recognition = new SpeechRecognition();
-            recognition.continuous = true;
-            recognition.interimResults = true;
+            recognition.continuous = true; // Giữ phiên ghi âm liên tục
+            recognition.interimResults = true; // Cho phép kết quả tạm thời
             recognition.lang = 'vi-VN'; // Thiết lập ngôn ngữ tiếng Việt
             
             let isRecording = false;
@@ -342,6 +342,9 @@
             // Hàm kiểm tra quyền microphone
             function checkMicrophonePermission() {
                 if (!navigator.permissions) {
+                    // Trình duyệt không hỗ trợ Permissions API, giả định ban đầu là có thể ghi âm
+                    status.textContent = 'Sẵn sàng ghi âm...';
+                    microphoneBtn.disabled = false;
                     return;
                 }
                 
@@ -353,6 +356,8 @@
                     };
                 }).catch(error => {
                     console.error('Không thể kiểm tra quyền microphone:', error);
+                    status.innerHTML = `<span class="recording-status">Lỗi: Không thể kiểm tra quyền microphone.</span>`;
+                    microphoneBtn.disabled = true;
                 });
             }
             
@@ -370,9 +375,19 @@
                         </div>
                     `;
                     microphoneBtn.disabled = true;
+                    // Nếu đang ghi âm và quyền bị từ chối, dừng nhận dạng
+                    if (isRecording) {
+                        recognition.stop(); 
+                        microphoneBtn.classList.remove('recording');
+                        isRecording = false;
+                    }
                 } else if (state === 'granted') {
                     status.textContent = 'Sẵn sàng ghi âm...';
                     microphoneBtn.disabled = false;
+                } else if (state === 'prompt') {
+                    // Quyền chưa được hỏi hoặc đang chờ người dùng phản hồi
+                    status.textContent = 'Nhấn nút Micro để cấp quyền ghi âm.';
+                    microphoneBtn.disabled = false; // Vẫn cho phép nhấn để kích hoạt hộp thoại quyền
                 }
             }
             
@@ -389,7 +404,7 @@
                     isRecording = false;
                 } else {
                     // Thử bắt đầu ghi âm
-                    finalTranscript = textOutput.value;
+                    // finalTranscript = textOutput.value; // Giữ lại văn bản cũ nếu muốn nối tiếp
                     try {
                         recognition.start();
                         microphoneBtn.classList.add('recording');
@@ -397,7 +412,13 @@
                         isRecording = true;
                     } catch (error) {
                         console.error('Lỗi khi bắt đầu recognition:', error);
-                        status.innerHTML = '<span class="recording-status">Lỗi: Không thể bắt đầu ghi âm. Vui lòng kiểm tra microphone.</span>';
+                        // Chỉ hiển thị lỗi nếu nó thực sự là lỗi không thể bắt đầu
+                        if (error.name === 'NotAllowedError' || error.name === 'AbortError') {
+                             status.innerHTML = `<span class="recording-status">Lỗi: ${error.message || 'Không thể bắt đầu ghi âm. Vui lòng kiểm tra quyền microphone.'}</span>`;
+                        } else {
+                            status.innerHTML = '<span class="recording-status">Lỗi: Không thể bắt đầu ghi âm. Vui lòng kiểm tra microphone hoặc quyền truy cập.</span>';
+                        }
+                       
                         isRecording = false;
                         microphoneBtn.classList.remove('recording');
                     }
@@ -406,7 +427,7 @@
             
             // Xử lý kết quả nhận dạng giọng nói
             recognition.onresult = (event) => {
-                let interimTranscript = '';
+                let currentInterimTranscript = '';
                 
                 for (let i = event.resultIndex; i < event.results.length; i++) {
                     const transcript = event.results[i][0].transcript;
@@ -414,17 +435,30 @@
                     if (event.results[i].isFinal) {
                         finalTranscript += transcript + ' ';
                     } else {
-                        interimTranscript += transcript;
+                        currentInterimTranscript += transcript;
                     }
                 }
-                
-                textOutput.value = finalTranscript + interimTranscript;
+                // Cập nhật textarea: finalTranscript là phần đã được xác nhận, currentInterimTranscript là phần nháp
+                // Điều này giúp tránh hiện tượng "nhảy chữ" khi kết quả tạm thời thay đổi liên tục
+                textOutput.value = finalTranscript + currentInterimTranscript;
+            };
+
+            // Xử lý khi nhận dạng bắt đầu
+            recognition.onstart = () => {
+                status.innerHTML = '<span class="recording-status">Đang ghi âm... Hãy nói gì đó.</span>';
+                microphoneBtn.classList.add('recording');
+                isRecording = true;
             };
             
             recognition.onerror = (event) => {
                 console.error('Lỗi nhận dạng giọng nói:', event.error);
                 
-                if (event.error === 'not-allowed') {
+                // Dừng ghi âm và reset trạng thái khi có lỗi
+                isRecording = false;
+                microphoneBtn.classList.remove('recording');
+                
+                if (event.error === 'not-allowed' || event.error === 'PermissionDeniedError') {
+                    // Xử lý lỗi quyền microphone
                     status.innerHTML = `
                         <div class="permission-error">
                             <strong>Lỗi: Microphone bị chặn. Vui lòng:</strong>
@@ -436,26 +470,28 @@
                             </ul>
                         </div>
                     `;
-                    // Dừng ghi âm và reset trạng thái
-                    isRecording = false;
-                    microphoneBtn.classList.remove('recording');
                     microphoneBtn.disabled = true;
+                } else if (event.error === 'aborted') {
+                    // Lỗi "aborted" có thể do nhiều nguyên nhân, ví dụ:
+                    // Người dùng đã nhấn stop, hoặc hệ thống tự động dừng nếu không có âm thanh.
+                    // Chúng ta sẽ coi đây là việc dừng không mong muốn nhưng không phải lỗi nghiêm trọng.
+                    status.innerHTML = '<span class="recording-status">Đã dừng ghi âm (aborted). Vui lòng nhấn Micro để bắt đầu lại.</span>';
+                }
+                else if (event.error === 'no-speech') {
+                    status.innerHTML = '<span class="recording-status">Không phát hiện giọng nói. Đã dừng ghi âm.</span>';
                 } else {
-                    status.innerHTML = `<span class="recording-status">Lỗi: ${event.error}</span>`;
+                    status.innerHTML = `<span class="recording-status">Lỗi: ${event.error}. Vui lòng thử lại.</span>`;
                 }
             };
             
             recognition.onend = () => {
-                if (isRecording) {
-                    // Tự động bắt đầu lại nếu đang trong chế độ ghi
-                    try {
-                        recognition.start();
-                    } catch (error) {
-                        console.error('Lỗi khi tự động bắt đầu lại:', error);
-                        status.innerHTML = '<span class="recording-status">Lỗi: Không thể tiếp tục ghi âm.</span>';
-                        isRecording = false;
-                        microphoneBtn.classList.remove('recording');
-                    }
+                // Sự kiện onend được gọi khi phiên nhận dạng kết thúc.
+                // Nếu recognition.continuous = true, thì API sẽ cố gắng khởi động lại.
+                // Tránh gọi recognition.start() một cách thủ công ở đây để tránh lỗi "aborted".
+                // Chỉ reset trạng thái nếu không còn đang ghi âm.
+                if (!isRecording) { // Chỉ cập nhật trạng thái nếu người dùng đã chủ động dừng hoặc có lỗi
+                    status.innerHTML = 'Sẵn sàng ghi âm...';
+                    microphoneBtn.classList.remove('recording');
                 }
             };
             
@@ -507,7 +543,7 @@
             clearBtn.addEventListener('click', () => {
                 if (textOutput.value.trim() === '' || confirm('Bạn có chắc muốn xóa toàn bộ văn bản?')) {
                     textOutput.value = '';
-                    finalTranscript = '';
+                    finalTranscript = ''; // Xóa cả bản ghi cuối cùng
                 }
             });
         });
