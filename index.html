@@ -321,10 +321,10 @@
         }
         
         .btn-share {
-    background: linear-gradient(to right, #3498db, #2980b9);
-    color: white;
-}
-.btn-clear {
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+        }
+        .btn-clear {
             background: linear-gradient(to right, #e67e22, #d35400);
             color: white;
         }
@@ -445,7 +445,7 @@
     <div class="container">
         <div class="header">
             <h1><i class="fas fa-microphone-alt"></i> Chuyển Giọng Nói Thành Văn Bản</h1>
-            <p>Ứng dụng hỗ trợ tiếng Việt - Khắc phục lỗi lặp văn bản</p>
+            <p>Ứng dụng hỗ trợ tiếng Việt - Nhấn nút Micro để mở/tắt ghi âm</p>
         </div>
         
         <div class="content">
@@ -480,27 +480,31 @@
                     <i class="fas fa-download"></i> Tạo file .txt
                 </button>
                 <button class="btn btn-share" id="shareBtn">
-        <i class="fas fa-share-alt"></i> Chia sẻ văn bản
-    </button>
-    <button class="btn btn-clear" id="clearBtn">
+                    <i class="fas fa-share-alt"></i> Chia sẻ văn bản
+                </button>
+                <button class="btn btn-clear" id="clearBtn">
                     <i class="fas fa-trash-alt"></i> Xóa văn bản
                 </button>
             </div>
             
             <div class="info-box">
-                <h3><i class="fas fa-info-circle"></i> Cải tiến mới:</h3>
+                <h3><i class="fas fa-info-circle"></i> Hướng dẫn sử dụng:</h3>
                 <ul>
-                    <li><i class="fas fa-check-circle"></i> Đã khắc phục tình trạng lặp văn bản</li>
-                    <li><i class="fas fa-check-circle"></i> Tối ưu hóa cho nhận dạng tiếng Việt</li>
-                    <li><i class="fas fa-check-circle"></i> Tự động loại bỏ các từ trùng lặp</li>
-                    <li><i class="fas fa-check-circle"></i> Hiển thị kết quả chính xác hơn</li>
+                    <li><i class="fas fa-check-circle"></i> Bắt đầu ghi âm: Nhấn vào nút biểu tượng Micro lớn ở giữa để bắt đầu hoặc dừng ghi âm.</li>
+                    <li><i class="fas fa-check-circle"></i> Cấp quyền Micro: Nếu đây là lần đầu sử dụng, trình duyệt có thể yêu cầu cấp quyền truy cập micro. Vui lòng cho phép để ứng dụng hoạt động.</li>
+                    <li><i class="fas fa-check-circle"></i> Nói rõ ràng: Để đạt kết quả tốt nhất, hãy nói rõ ràng, chậm rãi và ở gần micro.</li>
+                    <li><i class="fas fa-check-circle"></i> Sao chép văn bản: Sau khi ghi âm, nhấn nút "Copy văn bản" để sao chép nội dung vào bộ nhớ tạm.</li>
+                    <li><i class="fas fa-check-circle"></i> Tạo file .txt: Nhấn nút "Tạo file .txt" để tải văn bản đã chuyển đổi xuống máy tính của bạn.</li>
+                    <li><i class="fas fa-check-circle"></i> Chia sẻ văn bản: Nhấn nút "Chia sẻ văn bản" để chia sẻ nội dung thông qua các ứng dụng khác (tùy thuộc vào thiết bị của bạn).</li>
+                    <li><i class="fas fa-check-circle"></i> Xóa văn bản: Nhấn nút "Xóa văn bản" để xóa toàn bộ nội dung trong ô văn bản.</li>
+                    <li><i class="fas fa-check-circle"></i> Lưu ý trình duyệt: Ứng dụng hoạt động tốt nhất và ổn định nhất trên trình duyệt Google Chrome.</li>
                 </ul>
             </div>
         </div>
         
         <div class="footer">
             <p>Ứng dụng sử dụng Web Speech API - Tương thích tốt nhất với trình duyệt Chrome</p>
-            <p>© 2023 Chuyển Giọng Nói Thành Văn Bản Tiếng Việt</p>
+            <p>© 2025 Tổ công nghệ số Trung Bình A3</p>
         </div>
     </div>
 
@@ -636,22 +640,21 @@
             }
             
             // Xử lý kết quả nhận dạng giọng nói (ĐÃ SỬA LỖI LẶP VĂN BẢN)
-            
-recognition.onresult = (event) => {
-    let finalTranscript = '';
+            recognition.onresult = (event) => {
+                let finalTranscript = '';
 
-    for (let i = 0; i < event.results.length; i++) {
-        const result = event.results[i];
-        const transcript = removeDuplicateWords(result[0].transcript);
+                for (let i = 0; i < event.results.length; i++) {
+                    const result = event.results[i];
+                    const transcript = removeDuplicateWords(result[0].transcript);
 
-        if (result.isFinal) {
-            finalTranscript = transcript;
-        }
-    }
+                    if (result.isFinal) {
+                        finalTranscript = transcript;
+                    }
+                }
 
-    textOutput.value = finalTranscript.trim();
-    textOutput.scrollTop = textOutput.scrollHeight;
-};
+                textOutput.value = finalTranscript.trim();
+                textOutput.scrollTop = textOutput.scrollHeight;
+            };
 
             
             recognition.onerror = (event) => {
