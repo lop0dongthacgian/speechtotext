@@ -320,7 +320,11 @@
             color: white;
         }
         
-        .btn-clear {
+        .btn-share {
+    background: linear-gradient(to right, #3498db, #2980b9);
+    color: white;
+}
+.btn-clear {
             background: linear-gradient(to right, #e67e22, #d35400);
             color: white;
         }
@@ -475,7 +479,10 @@
                 <button class="btn btn-download" id="downloadBtn">
                     <i class="fas fa-download"></i> Tạo file .txt
                 </button>
-                <button class="btn btn-clear" id="clearBtn">
+                <button class="btn btn-share" id="shareBtn">
+        <i class="fas fa-share-alt"></i> Chia sẻ văn bản
+    </button>
+    <button class="btn btn-clear" id="clearBtn">
                     <i class="fas fa-trash-alt"></i> Xóa văn bản
                 </button>
             </div>
@@ -763,6 +770,30 @@
                 }
             });
         });
-    </script>
+    
+            // Xử lý nút Chia sẻ
+            const shareBtn = document.getElementById('shareBtn');
+            shareBtn.addEventListener('click', async () => {
+                const text = textOutput.value.trim();
+                if (!text) {
+                    alert('Không có văn bản để chia sẻ!');
+                    return;
+                }
+
+                if (navigator.share) {
+                    try {
+                        await navigator.share({
+                            title: 'Văn bản chuyển đổi',
+                            text: text
+                        });
+                    } catch (err) {
+                        console.error('Lỗi khi chia sẻ:', err);
+                    }
+                } else {
+                    alert('Trình duyệt không hỗ trợ chia sẻ tự động. Vui lòng sao chép thủ công.');
+                }
+            });
+
+</script>
 </body>
 </html>
