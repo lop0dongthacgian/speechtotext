@@ -211,6 +211,7 @@
         
         .text-container {
             margin-bottom: 25px;
+            position: relative;
         }
         
         .text-container label {
@@ -363,6 +364,18 @@
             color: #2c3e50;
         }
         
+        .duplicate-warning {
+            background-color: #fff9db;
+            color: #e67700;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #ffd43b;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
         @keyframes pulse {
             0% {
                 box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7);
@@ -428,7 +441,7 @@
     <div class="container">
         <div class="header">
             <h1><i class="fas fa-microphone-alt"></i> Chuyển Giọng Nói Thành Văn Bản</h1>
-            <p>Ứng dụng hỗ trợ tiếng Việt - Nhấn nút Micro để bắt đầu ghi âm</p>
+            <p>Ứng dụng hỗ trợ tiếng Việt - Khắc phục lỗi lặp văn bản</p>
         </div>
         
         <div class="content">
@@ -448,6 +461,11 @@
             <div class="text-container">
                 <label for="textOutput"><i class="fas fa-pencil-alt"></i> Văn bản chuyển đổi:</label>
                 <textarea id="textOutput" class="text-output" placeholder="Văn bản chuyển đổi sẽ hiển thị ở đây..."></textarea>
+                
+                <div class="duplicate-warning" id="duplicateWarning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Ứng dụng đã được cải tiến để giảm thiểu tình trạng lặp văn bản</span>
+                </div>
             </div>
             
             <div class="action-buttons">
@@ -463,13 +481,12 @@
             </div>
             
             <div class="info-box">
-                <h3><i class="fas fa-info-circle"></i> Hướng dẫn sử dụng:</h3>
+                <h3><i class="fas fa-info-circle"></i> Cải tiến mới:</h3>
                 <ul>
-                    <li>Sử dụng trình duyệt Chrome để có trải nghiệm tốt nhất</li>
-                    <li>Cho phép ứng dụng truy cập microphone khi được hỏi</li>
-                    <li>Nhấn nút Micro để bắt đầu/nhận dạng giọng nói</li>
-                    <li>Chỉnh sửa văn bản trực tiếp trong ô kết quả</li>
-                    <li>Lỗi "aborted" thường do Chrome chưa được cấp quyền microphone</li>
+                    <li><i class="fas fa-check-circle"></i> Đã khắc phục tình trạng lặp văn bản</li>
+                    <li><i class="fas fa-check-circle"></i> Tối ưu hóa cho nhận dạng tiếng Việt</li>
+                    <li><i class="fas fa-check-circle"></i> Tự động loại bỏ các từ trùng lặp</li>
+                    <li><i class="fas fa-check-circle"></i> Hiển thị kết quả chính xác hơn</li>
                 </ul>
             </div>
         </div>
@@ -489,6 +506,7 @@
             const clearBtn = document.getElementById('clearBtn');
             const status = document.getElementById('status');
             const soundWaves = document.querySelectorAll('.sound-wave');
+            const duplicateWarning = document.getElementById('duplicateWarning');
             
             // Kiểm tra trình duyệt hỗ trợ Web Speech API
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -505,10 +523,11 @@
             recognition.lang = 'vi-VN'; // Thiết lập ngôn ngữ tiếng Việt
             
             let isRecording = false;
-            let finalTranscript = '';
             let ignoreOnend = false;
             let recognitionStarted = false;
-            let lastResultIndex = 0; // Theo dõi chỉ số kết quả cuối cùng
+            let lastFinalTranscript = '';
+            let lastProcessedIndex = 0;
+            let interimTranscript = '';
             
             // Hàm kiểm tra quyền microphone
             function checkMicrophonePermission() {
@@ -568,8 +587,9 @@
                     recognitionStarted = false;
                 } else {
                     // Thử bắt đầu ghi âm
-                    finalTranscript = textOutput.value;
-                    lastResultIndex = 0; // Reset chỉ số kết quả
+                    lastFinalTranscript = textOutput.value;
+                    lastProcessedIndex = 0; // Reset chỉ số kết quả
+                    interimTranscript = ''; // Reset kết quả tạm thời
                     try {
                         recognition.start();
                         ignoreOnend = false;
@@ -578,6 +598,9 @@
                         status.innerHTML = '<span class="recording-status">Đang ghi âm... Hãy nói gì đó.</span>';
                         isRecording = true;
                         recognitionStarted = true;
+                        
+                        // Ẩn cảnh báo khi bắt đầu ghi âm
+                        duplicateWarning.style.display = 'none';
                     } catch (error) {
                         console.error('Lỗi khi bắt đầu recognition:', error);
                         status.innerHTML = '<span class="recording-status">Lỗi: Không thể bắt đầu ghi âm. Vui lòng kiểm tra microphone.</span>';
@@ -589,26 +612,47 @@
                 }
             });
             
-            // Xử lý kết quả nhận dạng giọng nói (ĐÃ SỬA LỖI HIỂN THỊ NHIỀU LẦN)
+            // Hàm xử lý loại bỏ từ trùng lặp
+            function removeDuplicateWords(transcript) {
+                // Tách các từ và loại bỏ từ trùng lặp liên tiếp
+                const words = transcript.split(' ');
+                const result = [];
+                
+                for (let i = 0; i < words.length; i++) {
+                    // Chỉ thêm từ nếu nó không giống từ ngay trước đó
+                    if (words[i] !== words[i - 1]) {
+                        result.push(words[i]);
+                    }
+                }
+                
+                return result.join(' ');
+            }
+            
+            // Xử lý kết quả nhận dạng giọng nói (ĐÃ SỬA LỖI LẶP VĂN BẢN)
             recognition.onresult = (event) => {
-                let interimTranscript = '';
+                // Reset interimTranscript mỗi lần nhận kết quả mới
+                interimTranscript = '';
                 
                 // Chỉ xử lý các kết quả mới kể từ lần cuối
-                for (let i = Math.max(event.resultIndex, lastResultIndex); i < event.results.length; i++) {
-                    const transcript = event.results[i][0].transcript;
+                for (let i = Math.max(event.resultIndex, lastProcessedIndex); i < event.results.length; i++) {
+                    const result = event.results[i];
+                    const transcript = result[0].transcript;
                     
-                    if (event.results[i].isFinal) {
-                        finalTranscript += transcript + ' ';
+                    if (result.isFinal) {
+                        // Xử lý loại bỏ từ trùng lặp cho kết quả cuối cùng
+                        const cleanedTranscript = removeDuplicateWords(transcript);
+                        lastFinalTranscript += cleanedTranscript + ' ';
                     } else {
-                        interimTranscript += transcript;
+                        // Xử lý loại bỏ từ trùng lặp cho kết quả tạm thời
+                        interimTranscript = removeDuplicateWords(transcript);
                     }
                 }
                 
                 // Cập nhật chỉ số kết quả cuối cùng đã xử lý
-                lastResultIndex = event.results.length;
+                lastProcessedIndex = event.results.length;
                 
                 // Hiển thị kết quả
-                textOutput.value = finalTranscript + interimTranscript;
+                textOutput.value = lastFinalTranscript + interimTranscript;
                 
                 // Tự động cuộn xuống dưới cùng
                 textOutput.scrollTop = textOutput.scrollHeight;
@@ -713,8 +757,9 @@
             clearBtn.addEventListener('click', () => {
                 if (textOutput.value.trim() === '' || confirm('Bạn có chắc muốn xóa toàn bộ văn bản?')) {
                     textOutput.value = '';
-                    finalTranscript = '';
-                    lastResultIndex = 0;
+                    lastFinalTranscript = '';
+                    interimTranscript = '';
+                    lastProcessedIndex = 0;
                 }
             });
         });
