@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ứng dụng chuyển đổi giọng nói thành văn bản tiếng Việt - Vietnamese Speech to Text">
+    <meta name="keywords" content="speech to text, vietnamese, voice recognition, giọng nói, văn bản">
+    <meta name="author" content="Your Name">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Vietnamese Speech to Text">
+    <meta property="og:description" content="Chuyển đổi giọng nói thành văn bản tiếng Việt miễn phí">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://your-domain.vercel.app/preview.png">
+    
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Vietnamese Speech to Text">
+    <meta name="twitter:description" content="Chuyển đổi giọng nói thành văn bản tiếng Việt miễn phí">
+    
+    <title>Vietnamese Speech to Text - Chuyển Giọng Nói Thành Văn Bản</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎤</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎤 Speech to Text</h1>
+            <p>Chuyển đổi giọng nói thành văn bản tiếng Việt</p>
+        </div>
+
+        <div class="alert error-message" id="errorMessage" style="display: none;"></div>
+        <div class="alert success-message" id="successMessage" style="display: none;"></div>
+
+        <div class="controls">
+            <button class="mic-button inactive" id="micButton" aria-label="Microphone Button">
+                🎤
+            </button>
+            <div class="status stopped" id="status">
+                Nhấn micro để bắt đầu
+            </div>
+        </div>
+
+        <div class="text-area">
+            <label for="textDisplay">Văn bản đã chuyển đổi:</label>
+            <textarea 
+                class="text-display" 
+                id="textDisplay" 
+                placeholder="Văn bản sẽ hiển thị ở đây sau khi bạn nói..."
+                aria-label="Converted text display"
+            ></textarea>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-copy" id="copyBtn" aria-label="Copy text">
+                📋 Sao chép
+            </button>
+            <button class="btn btn-clear" id="clearBtn" aria-label="Clear all text">
+                🗑️ Xóa tất cả
+            </button>
+            <button class="btn btn-save" id="saveBtn" aria-label="Save to file">
+                💾 Lưu file
+            </button>
+        </div>
+
+        <div class="help-section">
+            <details>
+                <summary>📖 Hướng dẫn sử dụng</summary>
+                <div class="help-content">
+                    <h3>🎯 Cách sử dụng:</h3>
+                    <ol>
+                        <li>Nhấn nút micro để bắt đầu ghi âm</li>
+                        <li>Nói tiếng Việt rõ ràng vào microphone</li>
+                        <li>Văn bản sẽ hiển thị ngay lập tức</li>
+                        <li>Nhấn lại nút micro để dừng</li>
+                        <li>Chỉnh sửa văn bản nếu cần</li>
+                        <li>Sao chép hoặc lưu file kết quả</li>
+                    </ol>
+                    
+                    <h3>⌨️ Phím tắt:</h3>
+                    <ul>
+                        <li><kbd>Ctrl</kbd> + <kbd>Space</kbd>: Bật/tắt ghi âm</li>
+                        <li><kbd>Ctrl</kbd> + <kbd>S</kbd>: Lưu file</li>
+                    </ul>
+                    
+                    <h3>💡 Lưu ý:</h3>
+                    <ul>
+                        <li>Cần cấp quyền truy cập microphone</li>
+                        <li>Hoạt động tốt nhất trên Chrome, Edge</li>
+                        <li>Nói rõ ràng để có kết quả tốt nhất</li>
+                    </ul>
+                </div>
+            </details>
+        </div>
+
+        <footer class="footer">
+            <p>Made with ❤️ for Vietnamese Speech Recognition</p>
+            <p>
+                <a href="https://github.com/yourusername/vietnamese-speech-to-text" target="_blank">
+                    📂 GitHub Repository
+                </a>
+            </p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+    
+    <!-- Analytics (Optional) -->
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=YOUR_GA_ID"></script> -->
+</body>
+</html>
