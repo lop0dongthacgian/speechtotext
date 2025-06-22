@@ -3,109 +3,514 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Ứng dụng chuyển đổi giọng nói thành văn bản tiếng Việt - Vietnamese Speech to Text">
-    <meta name="keywords" content="speech to text, vietnamese, voice recognition, giọng nói, văn bản">
-    <meta name="author" content="Your Name">
-    
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Vietnamese Speech to Text">
-    <meta property="og:description" content="Chuyển đổi giọng nói thành văn bản tiếng Việt miễn phí">
-    <meta property="og:type" content="website">
-    <meta property="og:image" content="https://your-domain.vercel.app/preview.png">
-    
-    <!-- Twitter Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Vietnamese Speech to Text">
-    <meta name="twitter:description" content="Chuyển đổi giọng nói thành văn bản tiếng Việt miễn phí">
-    
-    <title>Vietnamese Speech to Text - Chuyển Giọng Nói Thành Văn Bản</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎤</text></svg>">
+    <title>Chuyển Giọng Nói Thành Văn Bản Tiếng Việt</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #4b6cb7, #182848);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 800px;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .recorder-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .microphone-btn {
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            border: none;
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .microphone-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .microphone-btn.recording {
+            background: linear-gradient(to right, #e74c3c, #c0392b);
+            animation: pulse 1.5s infinite;
+        }
+        
+        .microphone-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .microphone-btn:disabled:hover {
+            transform: none;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .microphone-btn i {
+            font-size: 40px;
+            color: white;
+        }
+        
+        .status {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 1.1rem;
+            color: #2c3e50;
+            min-height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            line-height: 1.6;
+        }
+        
+        .recording-status {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .permission-error {
+            color: #e74c3c;
+            background-color: #fdecea;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: left;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+        
+        .permission-error ul {
+            margin: 10px 0 10px 20px;
+        }
+        
+        .text-container {
+            margin-bottom: 25px;
+        }
+        
+        .text-container label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        
+        .text-output {
+            width: 100%;
+            height: 200px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 1.1rem;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+        
+        .text-output:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn:disabled:hover {
+            transform: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-copy {
+            background: linear-gradient(to right, #2ecc71, #27ae60);
+            color: white;
+        }
+        
+        .btn-download {
+            background: linear-gradient(to right, #9b59b6, #8e44ad);
+            color: white;
+        }
+        
+        .btn-clear {
+            background: linear-gradient(to right, #e67e22, #d35400);
+            color: white;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #6c757d;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(231, 76, 60, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(231, 76, 60, 0);
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .microphone-btn {
+                width: 85px;
+                height: 85px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .status {
+                min-height: 100px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎤 Speech to Text</h1>
-            <p>Chuyển đổi giọng nói thành văn bản tiếng Việt</p>
+            <h1><i class="fas fa-microphone-alt"></i> Chuyển Giọng Nói Thành Văn Bản</h1>
+            <p>Ứng dụng hỗ trợ tiếng Việt - Nhấn nút Micro để bắt đầu ghi âm</p>
         </div>
-
-        <div class="alert error-message" id="errorMessage" style="display: none;"></div>
-        <div class="alert success-message" id="successMessage" style="display: none;"></div>
-
-        <div class="controls">
-            <button class="mic-button inactive" id="micButton" aria-label="Microphone Button">
-                🎤
-            </button>
-            <div class="status stopped" id="status">
-                Nhấn micro để bắt đầu
+        
+        <div class="content">
+            <div class="recorder-container">
+                <button class="microphone-btn" id="microphoneBtn">
+                    <i class="fas fa-microphone-alt"></i>
+                </button>
+            </div>
+            
+            <div class="status" id="status">
+                Sẵn sàng ghi âm...
+            </div>
+            
+            <div class="text-container">
+                <label for="textOutput">Văn bản chuyển đổi:</label>
+                <textarea id="textOutput" class="text-output" placeholder="Văn bản chuyển đổi sẽ hiển thị ở đây..."></textarea>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-copy" id="copyBtn">
+                    <i class="fas fa-copy"></i> Copy văn bản
+                </button>
+                <button class="btn btn-download" id="downloadBtn">
+                    <i class="fas fa-download"></i> Tạo file .txt
+                </button>
+                <button class="btn btn-clear" id="clearBtn">
+                    <i class="fas fa-trash-alt"></i> Xóa văn bản
+                </button>
             </div>
         </div>
-
-        <div class="text-area">
-            <label for="textDisplay">Văn bản đã chuyển đổi:</label>
-            <textarea 
-                class="text-display" 
-                id="textDisplay" 
-                placeholder="Văn bản sẽ hiển thị ở đây sau khi bạn nói..."
-                aria-label="Converted text display"
-            ></textarea>
+        
+        <div class="footer">
+            <p>Ứng dụng sử dụng Web Speech API - Tương thích tốt nhất với trình duyệt Chrome</p>
         </div>
-
-        <div class="action-buttons">
-            <button class="btn btn-copy" id="copyBtn" aria-label="Copy text">
-                📋 Sao chép
-            </button>
-            <button class="btn btn-clear" id="clearBtn" aria-label="Clear all text">
-                🗑️ Xóa tất cả
-            </button>
-            <button class="btn btn-save" id="saveBtn" aria-label="Save to file">
-                💾 Lưu file
-            </button>
-        </div>
-
-        <div class="help-section">
-            <details>
-                <summary>📖 Hướng dẫn sử dụng</summary>
-                <div class="help-content">
-                    <h3>🎯 Cách sử dụng:</h3>
-                    <ol>
-                        <li>Nhấn nút micro để bắt đầu ghi âm</li>
-                        <li>Nói tiếng Việt rõ ràng vào microphone</li>
-                        <li>Văn bản sẽ hiển thị ngay lập tức</li>
-                        <li>Nhấn lại nút micro để dừng</li>
-                        <li>Chỉnh sửa văn bản nếu cần</li>
-                        <li>Sao chép hoặc lưu file kết quả</li>
-                    </ol>
-                    
-                    <h3>⌨️ Phím tắt:</h3>
-                    <ul>
-                        <li><kbd>Ctrl</kbd> + <kbd>Space</kbd>: Bật/tắt ghi âm</li>
-                        <li><kbd>Ctrl</kbd> + <kbd>S</kbd>: Lưu file</li>
-                    </ul>
-                    
-                    <h3>💡 Lưu ý:</h3>
-                    <ul>
-                        <li>Cần cấp quyền truy cập microphone</li>
-                        <li>Hoạt động tốt nhất trên Chrome, Edge</li>
-                        <li>Nói rõ ràng để có kết quả tốt nhất</li>
-                    </ul>
-                </div>
-            </details>
-        </div>
-
-        <footer class="footer">
-            <p>Made with ❤️ for Vietnamese Speech Recognition</p>
-            <p>
-                <a href="https://github.com/yourusername/vietnamese-speech-to-text" target="_blank">
-                    📂 GitHub Repository
-                </a>
-            </p>
-        </footer>
     </div>
 
-    <script src="script.js"></script>
-    
-    <!-- Analytics (Optional) -->
-    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=YOUR_GA_ID"></script> -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const microphoneBtn = document.getElementById('microphoneBtn');
+            const textOutput = document.getElementById('textOutput');
+            const copyBtn = document.getElementById('copyBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const status = document.getElementById('status');
+            
+            // Kiểm tra trình duyệt hỗ trợ Web Speech API
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            
+            if (!SpeechRecognition) {
+                status.innerHTML = '<span class="recording-status">Trình duyệt của bạn không hỗ trợ Web Speech API. Vui lòng sử dụng Chrome.</span>';
+                microphoneBtn.disabled = true;
+                return;
+            }
+            
+            const recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'vi-VN'; // Thiết lập ngôn ngữ tiếng Việt
+            
+            let isRecording = false;
+            let finalTranscript = '';
+            
+            // Hàm kiểm tra quyền microphone
+            function checkMicrophonePermission() {
+                if (!navigator.permissions) {
+                    return;
+                }
+                
+                navigator.permissions.query({ name: 'microphone' }).then(permissionStatus => {
+                    updatePermissionStatus(permissionStatus.state);
+                    
+                    permissionStatus.onchange = () => {
+                        updatePermissionStatus(permissionStatus.state);
+                    };
+                }).catch(error => {
+                    console.error('Không thể kiểm tra quyền microphone:', error);
+                });
+            }
+            
+            function updatePermissionStatus(state) {
+                if (state === 'denied') {
+                    status.innerHTML = `
+                        <div class="permission-error">
+                            <strong>Microphone bị chặn. Vui lòng cấp quyền:</strong>
+                            <ul>
+                                <li>Nhấn vào biểu tượng ổ khóa trên thanh địa chỉ</li>
+                                <li>Chọn "Cài đặt trang web" hoặc "Quyền"</li>
+                                <li>Cho phép quyền Microphone</li>
+                                <li>Tải lại trang</li>
+                            </ul>
+                        </div>
+                    `;
+                    microphoneBtn.disabled = true;
+                } else if (state === 'granted') {
+                    status.textContent = 'Sẵn sàng ghi âm...';
+                    microphoneBtn.disabled = false;
+                }
+            }
+            
+            // Kiểm tra quyền khi tải trang
+            checkMicrophonePermission();
+            
+            // Xử lý sự kiện khi nhấn nút micro
+            microphoneBtn.addEventListener('click', () => {
+                if (isRecording) {
+                    // Dừng ghi âm
+                    recognition.stop();
+                    microphoneBtn.classList.remove('recording');
+                    status.innerHTML = 'Đã dừng ghi âm. <span class="recording-status">Sẵn sàng ghi âm...</span>';
+                    isRecording = false;
+                } else {
+                    // Thử bắt đầu ghi âm
+                    finalTranscript = textOutput.value;
+                    try {
+                        recognition.start();
+                        microphoneBtn.classList.add('recording');
+                        status.innerHTML = '<span class="recording-status">Đang ghi âm... Hãy nói gì đó.</span>';
+                        isRecording = true;
+                    } catch (error) {
+                        console.error('Lỗi khi bắt đầu recognition:', error);
+                        status.innerHTML = '<span class="recording-status">Lỗi: Không thể bắt đầu ghi âm. Vui lòng kiểm tra microphone.</span>';
+                        isRecording = false;
+                        microphoneBtn.classList.remove('recording');
+                    }
+                }
+            });
+            
+            // Xử lý kết quả nhận dạng giọng nói
+            recognition.onresult = (event) => {
+                let interimTranscript = '';
+                
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcript = event.results[i][0].transcript;
+                    
+                    if (event.results[i].isFinal) {
+                        finalTranscript += transcript + ' ';
+                    } else {
+                        interimTranscript += transcript;
+                    }
+                }
+                
+                textOutput.value = finalTranscript + interimTranscript;
+            };
+            
+            recognition.onerror = (event) => {
+                console.error('Lỗi nhận dạng giọng nói:', event.error);
+                
+                if (event.error === 'not-allowed') {
+                    status.innerHTML = `
+                        <div class="permission-error">
+                            <strong>Lỗi: Microphone bị chặn. Vui lòng:</strong>
+                            <ul>
+                                <li>Nhấn vào biểu tượng ổ khóa trên thanh địa chỉ</li>
+                                <li>Chọn "Cài đặt trang web" hoặc "Quyền"</li>
+                                <li>Cho phép quyền Microphone</li>
+                                <li>Tải lại trang</li>
+                            </ul>
+                        </div>
+                    `;
+                    // Dừng ghi âm và reset trạng thái
+                    isRecording = false;
+                    microphoneBtn.classList.remove('recording');
+                    microphoneBtn.disabled = true;
+                } else {
+                    status.innerHTML = `<span class="recording-status">Lỗi: ${event.error}</span>`;
+                }
+            };
+            
+            recognition.onend = () => {
+                if (isRecording) {
+                    // Tự động bắt đầu lại nếu đang trong chế độ ghi
+                    try {
+                        recognition.start();
+                    } catch (error) {
+                        console.error('Lỗi khi tự động bắt đầu lại:', error);
+                        status.innerHTML = '<span class="recording-status">Lỗi: Không thể tiếp tục ghi âm.</span>';
+                        isRecording = false;
+                        microphoneBtn.classList.remove('recording');
+                    }
+                }
+            };
+            
+            // Xử lý nút Copy
+            copyBtn.addEventListener('click', () => {
+                textOutput.select();
+                document.execCommand('copy');
+                
+                // Hiệu ứng feedback
+                const originalText = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<i class="fas fa-check"></i> Đã sao chép!';
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalText;
+                }, 2000);
+            });
+            
+            // Xử lý nút Tải xuống
+            downloadBtn.addEventListener('click', () => {
+                const text = textOutput.value;
+                if (!text.trim()) {
+                    alert('Vui lòng nhập văn bản trước khi tải xuống!');
+                    return;
+                }
+                
+                const blob = new Blob([text], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'van-ban-chuyen-doi.txt';
+                document.body.appendChild(a);
+                a.click();
+                
+                // Dọn dẹp
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                    
+                    // Hiệu ứng feedback
+                    const originalText = downloadBtn.innerHTML;
+                    downloadBtn.innerHTML = '<i class="fas fa-check"></i> Đã tải xuống!';
+                    setTimeout(() => {
+                        downloadBtn.innerHTML = originalText;
+                    }, 2000);
+                }, 100);
+            });
+            
+            // Xử lý nút Xóa
+            clearBtn.addEventListener('click', () => {
+                if (textOutput.value.trim() === '' || confirm('Bạn có chắc muốn xóa toàn bộ văn bản?')) {
+                    textOutput.value = '';
+                    finalTranscript = '';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
