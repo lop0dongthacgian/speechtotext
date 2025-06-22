@@ -636,34 +636,23 @@
             }
             
             // Xử lý kết quả nhận dạng giọng nói (ĐÃ SỬA LỖI LẶP VĂN BẢN)
-            recognition.onresult = (event) => {
-                // Reset interimTranscript mỗi lần nhận kết quả mới
-                interimTranscript = '';
-                
-                // Chỉ xử lý các kết quả mới kể từ lần cuối
-                for (let i = Math.max(event.resultIndex, lastProcessedIndex); i < event.results.length; i++) {
-                    const result = event.results[i];
-                    const transcript = result[0].transcript;
-                    
-                    if (result.isFinal) {
-                        // Xử lý loại bỏ từ trùng lặp cho kết quả cuối cùng
-                        const cleanedTranscript = removeDuplicateWords(transcript);
-                        lastFinalTranscript += cleanedTranscript + ' ';
-                    } else {
-                        // Xử lý loại bỏ từ trùng lặp cho kết quả tạm thời
-                        interimTranscript = removeDuplicateWords(transcript);
-                    }
-                }
-                
-                // Cập nhật chỉ số kết quả cuối cùng đã xử lý
-                lastProcessedIndex = event.results.length;
-                
-                // Hiển thị kết quả
-                textOutput.value = lastFinalTranscript + interimTranscript;
-                
-                // Tự động cuộn xuống dưới cùng
-                textOutput.scrollTop = textOutput.scrollHeight;
-            };
+            
+recognition.onresult = (event) => {
+    let finalTranscript = '';
+
+    for (let i = 0; i < event.results.length; i++) {
+        const result = event.results[i];
+        const transcript = removeDuplicateWords(result[0].transcript);
+
+        if (result.isFinal) {
+            finalTranscript = transcript;
+        }
+    }
+
+    textOutput.value = finalTranscript.trim();
+    textOutput.scrollTop = textOutput.scrollHeight;
+};
+
             
             recognition.onerror = (event) => {
                 console.error('Lỗi nhận dạng giọng nói:', event.error);
