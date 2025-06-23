@@ -64,6 +64,7 @@
             font-weight: 700;
             position: relative;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            color: #2ecc71; /* --- THAY ĐỔI: Màu xanh lá cây cho tiêu đề --- */
         }
         
         .header p {
@@ -176,7 +177,7 @@
             text-align: center;
             margin-top: 15px;
             font-size: 1.2rem;
-            color: #2c3e50;
+            color: #e74c3c; /* --- THAY ĐỔI: Màu đỏ cho trạng thái --- */
             min-height: 80px;
             display: flex;
             justify-content: center;
@@ -356,13 +357,13 @@
             color: #2c3e50;
             margin-bottom: 10px;
             font-size: 1.1rem;
-            cursor: pointer; /* Biến con trỏ thành bàn tay khi di chuột qua tiêu đề */
+            cursor: pointer;
             display: flex;
             align-items: center;
-            justify-content: center; /* Canh giữa tiêu đề */
+            justify-content: center;
             gap: 10px;
-            font-weight: bold; /* In đậm tiêu đề */
-            color: #1a2a6c; /* Màu sắc cho tiêu đề */
+            font-weight: bold;
+            color: #1a2a6c;
             text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
@@ -371,49 +372,37 @@
         }
 
         .info-box.active h3 i {
-            transform: rotate(90deg); /* Xoay icon khi mở rộng */
+            transform: rotate(90deg);
         }
         
         .info-box ul {
             padding-left: 20px;
-            margin-bottom: 0; /* Remove bottom margin */
-            list-style: none; /* Remove default bullet points */
+            margin-bottom: 0;
+            list-style: none;
             transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
-            max-height: 0; /* Thu gọn nội dung */
+            max-height: 0;
             overflow: hidden;
             opacity: 0;
         }
 
         .info-box.active ul {
-            max-height: 1000px; /* Tăng chiều cao tối đa để chứa đủ nội dung */
+            max-height: 1000px;
             opacity: 1;
-            margin-top: 10px; /* Add margin when expanded */
+            margin-top: 10px;
         }
         
         .info-box li {
             margin-bottom: 8px;
-            color: #2980b9; /* Màu sắc cho nội dung hướng dẫn */
+            color: #2980b9;
             position: relative;
-            padding-left: 25px; /* Khoảng cách cho icon */
+            padding-left: 25px;
         }
 
         .info-box li i {
             position: absolute;
             left: 0;
             top: 4px;
-            color: #27ae60; /* Màu sắc cho icon check */
-        }
-        
-        .duplicate-warning {
-            background-color: #fff9db;
-            color: #e67700;
-            padding: 10px;
-            border-radius: 8px;
-            margin-top: 10px;
-            border-left: 4px solid #ffd43b;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            color: #27ae60;
         }
         
         @keyframes pulse {
@@ -495,6 +484,7 @@
             </div>
             
             <div class="status" id="status">
+                <!-- --- THAY ĐỔI: Văn bản và màu sắc --- -->
                 Nhấn Micro để ghi âm, đọc xong nhấn lại để tắt
             </div>
             
@@ -502,10 +492,7 @@
                 <label for="textOutput"><i class="fas fa-pencil-alt"></i>Chỉnh sửa văn bản (nếu cần):</label>
                 <textarea id="textOutput" class="text-output" placeholder="Văn bản chuyển đổi sẽ hiển thị ở đây..."></textarea>
                 
-                <div class="duplicate-warning" id="duplicateWarning">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <span>Ứng dụng đã được cải tiến để giảm thiểu tình trạng lặp văn bản</span>
-                </div>
+                <!-- --- LOẠI BỎ: Dòng cảnh báo lặp văn bản --- -->
             </div>
             
             <div class="action-buttons">
@@ -553,11 +540,9 @@
             const clearBtn = document.getElementById('clearBtn');
             const status = document.getElementById('status');
             const soundWaves = document.querySelectorAll('.sound-wave');
-            const duplicateWarning = document.getElementById('duplicateWarning');
-            const infoBox = document.getElementById('infoBox'); // Get the info box element
-            const infoBoxHeading = infoBox.querySelector('h3'); // Get the heading inside info box
+            const infoBox = document.getElementById('infoBox'); 
+            const infoBoxHeading = infoBox.querySelector('h3'); 
             
-            // Kiểm tra trình duyệt hỗ trợ Web Speech API
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             
             if (!SpeechRecognition) {
@@ -569,15 +554,12 @@
             const recognition = new SpeechRecognition();
             recognition.continuous = true;
             recognition.interimResults = true;
-            recognition.lang = 'vi-VN'; // Thiết lập ngôn ngữ tiếng Việt
+            recognition.lang = 'vi-VN';
             
             let isRecording = false;
             let ignoreOnend = false;
             let recognitionStarted = false;
-            let lastFinalTranscript = '';
-            let lastProcessedIndex = 0;
-            let interimTranscript = '';
-            
+
             // Hàm kiểm tra quyền microphone
             function checkMicrophonePermission() {
                 if (!navigator.permissions) {
@@ -610,15 +592,14 @@
                     `;
                     microphoneBtn.disabled = true;
                 } else if (state === 'granted') {
-                    status.textContent = 'Sẵn sàng ghi âm... ';
+                    // --- THAY ĐỔI: Cập nhật văn bản trạng thái khi được cấp quyền ---
+                    status.textContent = 'Nhấn Micro để ghi âm, đọc xong nhấn lại để tắt';
                     microphoneBtn.disabled = false;
                 }
             }
             
-            // Kiểm tra quyền khi tải trang
             checkMicrophonePermission();
             
-            // Tự động cuộn textarea khi nội dung dài
             textOutput.addEventListener('input', () => {
                 textOutput.scrollTop = textOutput.scrollHeight;
             });
@@ -626,19 +607,15 @@
             // Xử lý sự kiện khi nhấn nút micro
             microphoneBtn.addEventListener('click', () => {
                 if (isRecording) {
-                    // Dừng ghi âm
                     ignoreOnend = true;
                     recognition.stop();
                     microphoneBtn.classList.remove('recording');
                     soundWaves.forEach(wave => wave.classList.remove('recording'));
-                    status.innerHTML = 'Đã dừng ghi âm. <span class="recording-status">Nhấn Micro để ghi âm...</span>';
+                    // --- THAY ĐỔI: Cập nhật văn bản trạng thái khi dừng ---
+                    status.innerHTML = 'Đã dừng ghi âm. <span style="font-weight:normal;">Nhấn Micro để ghi âm lại.</span>';
                     isRecording = false;
                     recognitionStarted = false;
                 } else {
-                    // Thử bắt đầu ghi âm
-                    lastFinalTranscript = textOutput.value;
-                    lastProcessedIndex = 0; // Reset chỉ số kết quả
-                    interimTranscript = ''; // Reset kết quả tạm thời
                     try {
                         recognition.start();
                         ignoreOnend = false;
@@ -647,9 +624,6 @@
                         status.innerHTML = '<span class="recording-status">Đang ghi âm... Hãy nói gì đó.</span>';
                         isRecording = true;
                         recognitionStarted = true;
-                        
-                        // Ẩn cảnh báo khi bắt đầu ghi âm
-                        duplicateWarning.style.display = 'none';
                     } catch (error) {
                         console.error('Lỗi khi bắt đầu recognition:', error);
                         status.innerHTML = '<span class="recording-status">Lỗi: Không thể bắt đầu ghi âm. Vui lòng kiểm tra microphone.</span>';
@@ -663,24 +637,18 @@
             
             // Hàm xử lý loại bỏ từ trùng lặp
             function removeDuplicateWords(transcript) {
-                // Tách các từ và loại bỏ từ trùng lặp liên tiếp
                 const words = transcript.split(' ');
                 const result = [];
-                
                 for (let i = 0; i < words.length; i++) {
-                    // Chỉ thêm từ nếu nó không giống từ ngay trước đó
                     if (words[i] !== words[i - 1]) {
                         result.push(words[i]);
                     }
                 }
-                
                 return result.join(' ');
             }
             
-            // Xử lý kết quả nhận dạng giọng nói (ĐÃ SỬA LỖI LẶP VĂN BẢN)
             recognition.onresult = (event) => {
                 let finalTranscript = '';
-
                 for (let i = 0; i < event.results.length; i++) {
                     const result = event.results[i];
                     const transcript = removeDuplicateWords(result[0].transcript);
@@ -689,15 +657,12 @@
                         finalTranscript = transcript;
                     }
                 }
-
                 textOutput.value = finalTranscript.trim();
                 textOutput.scrollTop = textOutput.scrollHeight;
             };
 
-            
             recognition.onerror = (event) => {
                 console.error('Lỗi nhận dạng giọng nói:', event.error);
-                
                 if (event.error === 'not-allowed' || event.error === 'aborted') {
                     status.innerHTML = `
                         <div class="permission-error">
@@ -710,7 +675,6 @@
                             </ul>
                         </div>
                     `;
-                    // Dừng ghi âm và reset trạng thái
                     isRecording = false;
                     recognitionStarted = false;
                     microphoneBtn.classList.remove('recording');
@@ -718,8 +682,6 @@
                     microphoneBtn.disabled = true;
                 } else {
                     status.innerHTML = `<span class="recording-status">Lỗi: ${event.error}</span>`;
-                    
-                    // Thử khởi động lại nếu đang trong trạng thái ghi âm
                     if (isRecording && recognitionStarted) {
                         try {
                             recognition.start();
@@ -732,7 +694,6 @@
             
             recognition.onend = () => {
                 if (isRecording && !ignoreOnend && recognitionStarted) {
-                    // Tự động bắt đầu lại nếu đang trong chế độ ghi và không phải do người dùng dừng
                     try {
                         recognition.start();
                     } catch (error) {
@@ -746,12 +707,9 @@
                 }
             };
             
-            // Xử lý nút Copy
             copyBtn.addEventListener('click', () => {
                 textOutput.select();
                 document.execCommand('copy');
-                
-                // Hiệu ứng feedback
                 const originalText = copyBtn.innerHTML;
                 copyBtn.innerHTML = '<i class="fas fa-check"></i> Đã sao chép!';
                 setTimeout(() => {
@@ -759,29 +717,22 @@
                 }, 2000);
             });
             
-            // Xử lý nút Tải xuống
             downloadBtn.addEventListener('click', () => {
                 const text = textOutput.value;
                 if (!text.trim()) {
                     alert('Vui lòng nhập văn bản trước khi tải xuống!');
                     return;
                 }
-                
                 const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
                 const url = URL.createObjectURL(blob);
-                
                 const a = document.createElement('a');
                 a.href = url;
                 a.download = 'van-ban-chuyen-doi.txt';
                 document.body.appendChild(a);
                 a.click();
-                
-                // Dọn dẹp
                 setTimeout(() => {
                     document.body.removeChild(a);
                     window.URL.revokeObjectURL(url);
-                    
-                    // Hiệu ứng feedback
                     const originalText = downloadBtn.innerHTML;
                     downloadBtn.innerHTML = '<i class="fas fa-check"></i> Đã tải xuống!';
                     setTimeout(() => {
@@ -790,17 +741,12 @@
                 }, 100);
             });
             
-            // Xử lý nút Xóa
             clearBtn.addEventListener('click', () => {
                 if (textOutput.value.trim() === '' || confirm('Bạn có chắc muốn xóa toàn bộ văn bản?')) {
                     textOutput.value = '';
-                    lastFinalTranscript = '';
-                    interimTranscript = '';
-                    lastProcessedIndex = 0;
                 }
             });
 
-            // Xử lý nút Chia sẻ
             const shareBtn = document.getElementById('shareBtn');
             shareBtn.addEventListener('click', async () => {
                 const text = textOutput.value.trim();
@@ -811,10 +757,7 @@
 
                 if (navigator.share) {
                     try {
-                        await navigator.share({
-                            
-                            text: text
-                        });
+                        await navigator.share({ text: text });
                     } catch (err) {
                         console.error('Lỗi khi chia sẻ:', err);
                     }
@@ -823,7 +766,6 @@
                 }
             });
 
-            // Toggle function for info box
             infoBoxHeading.addEventListener('click', () => {
                 infoBox.classList.toggle('active');
             });
