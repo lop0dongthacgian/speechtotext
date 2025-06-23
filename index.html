@@ -64,7 +64,7 @@
             font-weight: 700;
             position: relative;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-            color: #2ecc71; /* --- THAY ĐỔI: Màu xanh lá cây cho tiêu đề --- */
+            color: #2ecc71; 
         }
         
         .header p {
@@ -177,7 +177,7 @@
             text-align: center;
             margin-top: 15px;
             font-size: 1.2rem;
-            color: #e74c3c; /* --- THAY ĐỔI: Màu đỏ cho trạng thái --- */
+            color: #2ecc71; /* --- THAY ĐỔI: Màu xanh cho trạng thái --- */
             min-height: 80px;
             display: flex;
             justify-content: center;
@@ -484,15 +484,12 @@
             </div>
             
             <div class="status" id="status">
-                <!-- --- THAY ĐỔI: Văn bản và màu sắc --- -->
                 Nhấn Micro để ghi âm, đọc xong nhấn lại để tắt
             </div>
             
             <div class="text-container">
                 <label for="textOutput"><i class="fas fa-pencil-alt"></i>Chỉnh sửa văn bản (nếu cần):</label>
                 <textarea id="textOutput" class="text-output" placeholder="Văn bản chuyển đổi sẽ hiển thị ở đây..."></textarea>
-                
-                <!-- --- LOẠI BỎ: Dòng cảnh báo lặp văn bản --- -->
             </div>
             
             <div class="action-buttons">
@@ -592,7 +589,6 @@
                     `;
                     microphoneBtn.disabled = true;
                 } else if (state === 'granted') {
-                    // --- THAY ĐỔI: Cập nhật văn bản trạng thái khi được cấp quyền ---
                     status.textContent = 'Nhấn Micro để ghi âm, đọc xong nhấn lại để tắt';
                     microphoneBtn.disabled = false;
                 }
@@ -611,7 +607,6 @@
                     recognition.stop();
                     microphoneBtn.classList.remove('recording');
                     soundWaves.forEach(wave => wave.classList.remove('recording'));
-                    // --- THAY ĐỔI: Cập nhật văn bản trạng thái khi dừng ---
                     status.innerHTML = 'Đã dừng ghi âm. <span style="font-weight:normal;">Nhấn Micro để ghi âm lại.</span>';
                     isRecording = false;
                     recognitionStarted = false;
