@@ -566,14 +566,15 @@
             }
             
             const recognition = new SpeechRecognition();
-            recognition.continuous = true;
-            recognition.interimResults = true;
+            recognition.continuous = true; // Cho phép nhận dạng liên tục
+            recognition.interimResults = true; // Hiển thị kết quả tạm thời
             recognition.lang = 'vi-VN'; 
             
             let isRecording = false;
             let ignoreOnend = false;
-            let finalTranscript = ''; // Lưu trữ đoạn văn bản cuối cùng đã được xác nhận
-            
+            let finalTranscript = ''; // Lưu trữ phần văn bản cuối cùng đã được xác nhận
+            let lastRecognizedLength = 0; // Độ dài của phần văn bản đã được ghi nhận trước đó
+
             // Hàm kiểm tra quyền microphone
             function checkMicrophonePermission() {
                 if (!navigator.permissions) {
@@ -626,7 +627,9 @@
                     status.innerHTML = 'Đã dừng ghi âm. <span class="recording-status">Sẵn sàng ghi âm...</span>';
                     isRecording = false;
                 } else {
-                    finalTranscript = textOutput.value; // Giữ lại văn bản hiện có trước khi bắt đầu phiên mới
+                    finalTranscript = textOutput.value.trim(); // Lấy văn bản hiện có
+                    lastRecognizedLength = finalTranscript.length; // Đặt độ dài đã ghi nhận
+                    
                     try {
                         recognition.start();
                         ignoreOnend = false;
@@ -645,27 +648,47 @@
                 }
             });
             
-            // Xử lý kết quả nhận dạng giọng nói để giảm lặp
+            // Cập nhật logic onresult để giảm lặp
             recognition.onresult = (event) => {
-                let interimTranscript = '';
-                let newFinalTranscript = '';
-
+                let currentInterimTranscript = '';
+                let currentFinalTranscript = '';
+                
+                // Lặp qua tất cả các kết quả từ sự kiện
                 for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    const transcript = event.results[i][0].transcript;
                     if (event.results[i].isFinal) {
-                        newFinalTranscript += event.results[i][0].transcript;
+                        currentFinalTranscript += transcript;
                     } else {
-                        interimTranscript += event.results[i][0].transcript;
+                        currentInterimTranscript += transcript;
                     }
                 }
-                
+
                 // Cập nhật finalTranscript và hiển thị
-                if (newFinalTranscript) {
-                    finalTranscript += newFinalTranscript;
-                    textOutput.value = finalTranscript + interimTranscript;
-                } else {
-                    textOutput.value = finalTranscript + interimTranscript;
+                if (currentFinalTranscript) {
+                    // Loại bỏ phần trùng lặp từ currentFinalTranscript nếu nó đã xuất hiện trong finalTranscript
+                    // Đây là bước quan trọng để xử lý lặp
+                    let trimmedFinalTranscript = currentFinalTranscript.trim();
+                    let updatedFinalPart = '';
+
+                    // So sánh finalTranscript với trimmedFinalTranscript để tìm phần mới
+                    // Chỉ thêm phần mới vào finalTranscript
+                    if (finalTranscript.length > 0 && trimmedFinalTranscript.startsWith(finalTranscript.trim())) {
+                        updatedFinalPart = trimmedFinalTranscript.substring(finalTranscript.trim().length).trim();
+                    } else {
+                        updatedFinalPart = trimmedFinalTranscript;
+                    }
+                    
+                    finalTranscript += (finalTranscript.endsWith(' ') || !finalTranscript ? '' : ' ') + updatedFinalPart; // Thêm khoảng trắng nếu cần
                 }
                 
+                // Cập nhật textOutput: phần cuối cùng đã xác nhận + phần tạm thời hiện tại
+                textOutput.value = finalTranscript.trim() + (currentInterimTranscript ? ' ' + currentInterimTranscript.trim() : '');
+                
+                // Đảm bảo không có khoảng trắng thừa ở đầu nếu finalTranscript rỗng
+                if (!finalTranscript.trim() && currentInterimTranscript.trim()) {
+                    textOutput.value = currentInterimTranscript.trim();
+                }
+
                 textOutput.scrollTop = textOutput.scrollHeight;
             };
 
@@ -691,20 +714,26 @@
                 } else {
                     status.innerHTML = `<span class="recording-status">Lỗi: ${event.error}</span>`;
                     
+                    // Thử khởi động lại nhận dạng nếu vẫn đang trong chế độ ghi
                     if (isRecording) {
                         try {
-                            recognition.start(); // Thử khởi động lại nếu đang ghi
+                            recognition.start(); 
                         } catch (error) {
                             console.error('Lỗi khi khởi động lại:', error);
+                            status.innerHTML = '<span class="recording-status">Lỗi: Không thể tiếp tục ghi âm.</span>';
+                            isRecording = false;
+                            microphoneBtn.classList.remove('recording');
+                            soundWaves.forEach(wave => wave.classList.remove('recording'));
                         }
                     }
                 }
             };
             
             recognition.onend = () => {
+                // Nếu đang ghi và không phải do người dùng dừng, tự động khởi động lại
                 if (isRecording && !ignoreOnend) {
                     try {
-                        recognition.start(); // Tự động bắt đầu lại nếu đang trong chế độ ghi
+                        recognition.start(); 
                     } catch (error) {
                         console.error('Lỗi khi tự động bắt đầu lại:', error);
                         status.innerHTML = '<span class="recording-status">Lỗi: Không thể tiếp tục ghi âm.</span>';
@@ -758,6 +787,7 @@
                 if (textOutput.value.trim() === '' || confirm('Bạn có chắc muốn xóa toàn bộ văn bản?')) {
                     textOutput.value = '';
                     finalTranscript = ''; 
+                    lastRecognizedLength = 0; // Reset khi xóa
                 }
             });
 
