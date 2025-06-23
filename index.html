@@ -356,13 +356,13 @@
             color: #2c3e50;
             margin-bottom: 10px;
             font-size: 1.1rem;
-            cursor: pointer; /* Biến con trỏ thành bàn tay khi di chuột qua tiêu đề */
+            cursor: pointer;
             display: flex;
             align-items: center;
-            justify-content: center; /* Canh giữa tiêu đề */
+            justify-content: center;
             gap: 10px;
-            font-weight: bold; /* In đậm tiêu đề */
-            color: #1a2a6c; /* Màu sắc cho tiêu đề */
+            font-weight: bold;
+            color: #1a2a6c;
             text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
@@ -371,37 +371,37 @@
         }
 
         .info-box.active h3 i {
-            transform: rotate(90deg); /* Xoay icon khi mở rộng */
+            transform: rotate(90deg);
         }
         
         .info-box ul {
             padding-left: 20px;
-            margin-bottom: 0; /* Remove bottom margin */
-            list-style: none; /* Remove default bullet points */
+            margin-bottom: 0;
+            list-style: none;
             transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
-            max-height: 0; /* Thu gọn nội dung */
+            max-height: 0;
             overflow: hidden;
             opacity: 0;
         }
 
         .info-box.active ul {
-            max-height: 1000px; /* Tăng chiều cao tối đa để chứa đủ nội dung */
+            max-height: 1000px;
             opacity: 1;
-            margin-top: 10px; /* Add margin when expanded */
+            margin-top: 10px;
         }
         
         .info-box li {
             margin-bottom: 8px;
-            color: #2980b9; /* Màu sắc cho nội dung hướng dẫn */
+            color: #2980b9;
             position: relative;
-            padding-left: 25px; /* Khoảng cách cho icon */
+            padding-left: 25px;
         }
 
         .info-box li i {
             position: absolute;
             left: 0;
             top: 4px;
-            color: #27ae60; /* Màu sắc cho icon check */
+            color: #27ae60;
         }
         
         .duplicate-warning {
@@ -411,6 +411,18 @@
             border-radius: 8px;
             margin-top: 10px;
             border-left: 4px solid #ffd43b;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .memory-info {
+            background-color: #e1f5fe;
+            color: #0288d1;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #29b6f6;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -506,6 +518,11 @@
                     <i class="fas fa-exclamation-triangle"></i>
                     <span>Ứng dụng đã được cải tiến để giảm thiểu tình trạng lặp văn bản</span>
                 </div>
+                
+                <div class="memory-info" id="memoryInfo">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Ứng dụng hỗ trợ tạo văn bản dài - Tự động quản lý bộ nhớ</span>
+                </div>
             </div>
             
             <div class="action-buttons">
@@ -526,21 +543,20 @@
             <div class="info-box" id="infoBox">
                 <h3><i class="fas fa-chevron-right"></i> Hướng dẫn sử dụng</h3>
                 <ul>
-                    <li><i class="fas fa-check-circle"></i> **Bắt đầu ghi âm:** Nhấn vào nút biểu tượng Micro lớn ở giữa để bắt đầu hoặc dừng ghi âm.</li>
-                    <li><i class="fas fa-check-circle"></i> **Cấp quyền Micro:** Nếu đây là lần đầu sử dụng, trình duyệt có thể yêu cầu cấp quyền truy cập micro. Vui lòng cho phép để ứng dụng hoạt động.</li>
-                    <li><i class="fas fa-check-circle"></i> **Nói rõ ràng:** Để đạt kết quả tốt nhất, hãy nói rõ ràng, chậm rãi và ở gần micro.</li>
-                    <li><i class="fas fa-check-circle"></i> **Sao chép văn bản:** Sau khi ghi âm, nhấn nút "Copy văn bản" để sao chép nội dung vào bộ nhớ tạm.</li>
-                    <li><i class="fas fa-check-circle"></i> **Tạo file .txt:** Nhấn nút "Tạo file .txt" để tải văn bản đã chuyển đổi xuống máy của bạn.</li>
-                    <li><i class="fas fa-check-circle"></i> **Chia sẻ văn bản:** Nhấn nút "Chia sẻ văn bản" để chia sẻ nội dung thông qua các ứng dụng khác (tùy thuộc vào thiết bị của bạn).</li>
-                    <li><i class="fas fa-check-circle"></i> **Xóa văn bản:** Nhấn nút "Xóa văn bản" để xóa toàn bộ nội dung trong ô văn bản.</li>
-                    <li><i class="fas fa-check-circle"></i> **Lưu ý trình duyệt:** Ứng dụng hoạt động tốt nhất và ổn định nhất trên trình duyệt Google Chrome.</li>
+                    <li><i class="fas fa-check-circle"></i> **Ghi âm dài:** Ứng dụng hỗ trợ ghi âm không giới hạn thời gian. Nói liên tục, hệ thống sẽ tự động xử lý.</li>
+                    <li><i class="fas fa-check-circle"></i> **Nối văn bản:** Kết quả sẽ được nối tự động vào văn bản hiện có khi bạn nói.</li>
+                    <li><i class="fas fa-check-circle"></i> **Quản lý bộ nhớ:** Ứng dụng tự động tối ưu cho văn bản dài, không lo bị mất dữ liệu.</li>
+                    <li><i class="fas fa-check-circle"></i> **Tạm dừng:** Nhấn nút Micro để tạm dừng khi cần nghỉ.</li>
+                    <li><i class="fas fa-check-circle"></i> **Tiếp tục:** Nhấn lại nút Micro để tiếp tục ghi âm vào văn bản hiện có.</li>
+                    <li><i class="fas fa-check-circle"></i> **Xử lý lỗi:** Nếu có lỗi, ứng dụng sẽ tự động khởi động lại quá trình ghi âm.</li>
+                    <li><i class="fas fa-check-circle"></i> **Trình duyệt:** Hoạt động tốt nhất trên Chrome - hỗ trợ ghi âm dài liên tục.</li>
                 </ul>
             </div>
         </div>
         
         <div class="footer">
             <p>Ứng dụng sử dụng Web Speech API - Tương thích tốt nhất với trình duyệt Chrome</p>
-            <p>© 2025 Tổ công nghệ số Trung Bình A3</p>
+            <p>© 2025 Tổ công nghệ số Trung Bình A3 - Phiên bản hỗ trợ văn bản dài</p>
         </div>
     </div>
 
@@ -554,8 +570,14 @@
             const status = document.getElementById('status');
             const soundWaves = document.querySelectorAll('.sound-wave');
             const duplicateWarning = document.getElementById('duplicateWarning');
-            const infoBox = document.getElementById('infoBox'); // Get the info box element
-            const infoBoxHeading = infoBox.querySelector('h3'); // Get the heading inside info box
+            const memoryInfo = document.getElementById('memoryInfo');
+            const infoBox = document.getElementById('infoBox');
+            const infoBoxHeading = infoBox.querySelector('h3');
+            
+            // Biến cho văn bản dài
+            let baseText = ''; // Nội dung trước khi bắt đầu ghi âm
+            let accumulatedFinalTranscript = ''; // Kết quả đã được xử lý
+            let interimTranscript = ''; // Kết quả tạm thời
             
             // Kiểm tra trình duyệt hỗ trợ Web Speech API
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -569,14 +591,11 @@
             const recognition = new SpeechRecognition();
             recognition.continuous = true;
             recognition.interimResults = true;
-            recognition.lang = 'vi-VN'; // Thiết lập ngôn ngữ tiếng Việt
+            recognition.lang = 'vi-VN';
             
             let isRecording = false;
             let ignoreOnend = false;
             let recognitionStarted = false;
-            let lastFinalTranscript = '';
-            let lastProcessedIndex = 0;
-            let interimTranscript = '';
             
             // Hàm kiểm tra quyền microphone
             function checkMicrophonePermission() {
@@ -623,11 +642,30 @@
                 textOutput.scrollTop = textOutput.scrollHeight;
             });
             
+            // Hàm xử lý loại bỏ từ trùng lặp
+            function removeDuplicateWords(transcript) {
+                const words = transcript.split(' ');
+                const result = [];
+                
+                for (let i = 0; i < words.length; i++) {
+                    if (words[i] !== words[i - 1]) {
+                        result.push(words[i]);
+                    }
+                }
+                
+                return result.join(' ');
+            }
+            
             // Xử lý sự kiện khi nhấn nút micro
             microphoneBtn.addEventListener('click', () => {
                 if (isRecording) {
                     // Dừng ghi âm
                     ignoreOnend = true;
+                    
+                    // Cập nhật textOutput với kết quả cuối cùng (loại bỏ kết quả tạm thời)
+                    textOutput.value = baseText + accumulatedFinalTranscript;
+                    textOutput.scrollTop = textOutput.scrollHeight;
+                    
                     recognition.stop();
                     microphoneBtn.classList.remove('recording');
                     soundWaves.forEach(wave => wave.classList.remove('recording'));
@@ -635,10 +673,11 @@
                     isRecording = false;
                     recognitionStarted = false;
                 } else {
-                    // Thử bắt đầu ghi âm
-                    lastFinalTranscript = textOutput.value;
-                    lastProcessedIndex = 0; // Reset chỉ số kết quả
-                    interimTranscript = ''; // Reset kết quả tạm thời
+                    // Bắt đầu ghi âm
+                    baseText = textOutput.value; // Lưu nội dung hiện tại làm base
+                    accumulatedFinalTranscript = '';
+                    interimTranscript = '';
+                    
                     try {
                         recognition.start();
                         ignoreOnend = false;
@@ -661,39 +700,34 @@
                 }
             });
             
-            // Hàm xử lý loại bỏ từ trùng lặp
-            function removeDuplicateWords(transcript) {
-                // Tách các từ và loại bỏ từ trùng lặp liên tiếp
-                const words = transcript.split(' ');
-                const result = [];
-                
-                for (let i = 0; i < words.length; i++) {
-                    // Chỉ thêm từ nếu nó không giống từ ngay trước đó
-                    if (words[i] !== words[i - 1]) {
-                        result.push(words[i]);
-                    }
-                }
-                
-                return result.join(' ');
-            }
-            
-            // Xử lý kết quả nhận dạng giọng nói (ĐÃ SỬA LỖI LẶP VĂN BẢN)
+            // Xử lý kết quả nhận dạng giọng nói (ĐÃ CẬP NHẬT CHO VĂN BẢN DÀI)
             recognition.onresult = (event) => {
-                let finalTranscript = '';
-
-                for (let i = 0; i < event.results.length; i++) {
+                // Reset interimTranscript cho batch kết quả mới
+                interimTranscript = '';
+                
+                // Xử lý tất cả kết quả mới
+                for (let i = event.resultIndex; i < event.results.length; i++) {
                     const result = event.results[i];
-                    const transcript = removeDuplicateWords(result[0].transcript);
-
+                    let transcript = result[0].transcript;
+                    
+                    // Áp dụng xử lý loại bỏ từ trùng lặp
+                    transcript = removeDuplicateWords(transcript);
+                    
                     if (result.isFinal) {
-                        finalTranscript = transcript;
+                        // Thêm kết quả cuối cùng vào accumulatedFinalTranscript
+                        accumulatedFinalTranscript += transcript + ' ';
+                    } else {
+                        // Lưu kết quả tạm thời mới nhất
+                        interimTranscript = transcript;
                     }
                 }
-
-                textOutput.value = finalTranscript.trim();
+                
+                // Cập nhật textOutput với nội dung mới
+                textOutput.value = baseText + accumulatedFinalTranscript + interimTranscript;
+                
+                // Tự động cuộn xuống dưới cùng
                 textOutput.scrollTop = textOutput.scrollHeight;
             };
-
             
             recognition.onerror = (event) => {
                 console.error('Lỗi nhận dạng giọng nói:', event.error);
@@ -730,11 +764,17 @@
                 }
             };
             
+            // Xử lý khi kết thúc nhận dạng (tự động khởi động lại cho văn bản dài)
             recognition.onend = () => {
                 if (isRecording && !ignoreOnend && recognitionStarted) {
-                    // Tự động bắt đầu lại nếu đang trong chế độ ghi và không phải do người dùng dừng
+                    // Cập nhật baseText với nội dung hiện tại
+                    baseText = textOutput.value;
+                    accumulatedFinalTranscript = '';
+                    interimTranscript = '';
+                    
                     try {
                         recognition.start();
+                        status.innerHTML = '<span class="recording-status">Đã tự động khởi động lại ghi âm...</span>';
                     } catch (error) {
                         console.error('Lỗi khi tự động bắt đầu lại:', error);
                         status.innerHTML = '<span class="recording-status">Lỗi: Không thể tiếp tục ghi âm.</span>';
@@ -794,9 +834,9 @@
             clearBtn.addEventListener('click', () => {
                 if (textOutput.value.trim() === '' || confirm('Bạn có chắc muốn xóa toàn bộ văn bản?')) {
                     textOutput.value = '';
-                    lastFinalTranscript = '';
+                    baseText = '';
+                    accumulatedFinalTranscript = '';
                     interimTranscript = '';
-                    lastProcessedIndex = 0;
                 }
             });
 
@@ -812,7 +852,6 @@
                 if (navigator.share) {
                     try {
                         await navigator.share({
-                            
                             text: text
                         });
                     } catch (err) {
