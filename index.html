@@ -495,7 +495,7 @@
             </div>
             
             <div class="status" id="status">
-                Sẵn sàng ghi âm...
+                Nhấn Micro để ghi âm, đọc xong nhấn lại để tắt
             </div>
             
             <div class="text-container">
@@ -610,7 +610,7 @@
                     `;
                     microphoneBtn.disabled = true;
                 } else if (state === 'granted') {
-                    status.textContent = 'Nhấn Micro để ghi âm, đọc xong nhấn lại để tắt';
+                    status.textContent = 'Sẵn sàng ghi âm... ';
                     microphoneBtn.disabled = false;
                 }
             }
